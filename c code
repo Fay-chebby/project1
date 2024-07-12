@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>  // For sleep function
+
+void cprintf(const char *str) {
+    // Define a static buffer and buffer index to hold the characters between calls
+    static char buffer[1024];
+    static int buf_index = 0;
+
+    // Iterate through each character in the input string
+    for (int i = 0; str[i] != '\0'; ++i) {
+        if (str[i] == '%') {
+            // If a percent symbol is encountered, flush the buffer
+            buffer[buf_index] = '\0';  // Null-terminate the buffer
+            printf("%s", buffer);      // Print the buffer contents
+            buf_index = 0;             // Reset the buffer index
+        } else {
+            // Add the character to the buffer
+            buffer[buf_index++] = str[i];
+            if (str[i] == '\n') {
+                // If a newline character is encountered, print it immediately
+                buffer[buf_index] = '\0';  // Null-terminate the buffer
+                printf("%s", buffer);      // Print the buffer contents
+                buf_index = 0;             // Reset the buffer index
+            }
+        }
+    }
+}
+
+int main() {
+    cprintf("Test\n");
+    sleep(1);
+    cprintf("Re%test\n");
+    sleep(1);
+    cprintf("All done\n%");
+    return 0;
+}
